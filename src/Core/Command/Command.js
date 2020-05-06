@@ -4,7 +4,6 @@ import CommandPermissions from './CommandPermissions';
 import CommandOptions from './CommandOptions';
 import CommandCooldown from './CommandCooldown';
 import CommandContext from './CommandContext';
-import CommandResponse from './CommandResponse';
 
 import CommandRegistry from '../Stores/CommandRegistry';
 
@@ -342,7 +341,7 @@ class Command extends Base {
             .catch(err => {
                 !env.isAdmin && this._cooldown.shouldSetCooldown() && this._cooldown.setCooldown(this.library.message.getAuthorID(msg) );
 
-                context.addResponseData(new CommandResponse( { success: false, triggerCooldown: true, error: err } ) );
+                this.sendError(msg.channel, 'Unexpected error occured.', { triggerCooldown: true, error: err } ).then(r => context.addResponseData(r) );
                 throw new AxonCommandError(context, err);
             } );
     }
